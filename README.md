@@ -145,8 +145,8 @@ Our trained model weights are hosted on Hugging Face:
 
 | Model | Description | Link |
 |-------|-------------|------|
-| Qwen2.5-7B-Protein-SFT | Cold-start SFT checkpoint | _TODO: add link_ |
-| ProtoCycle-7B | GRPO-TCR RL checkpoint | _TODO: add link_ |
+| ProtoCycle-7B-SFT | Cold-start SFT checkpoint (Qwen2.5-7B base) | [Huggggooo/ProtoCycle-7B-SFT](https://huggingface.co/Huggggooo/ProtoCycle-7B-SFT) |
+| ProtoCycle-7B | GRPO-TCR RL checkpoint | [Huggggooo/ProtoCycle-7B](https://huggingface.co/Huggggooo/ProtoCycle-7B) |
 
 ## Training
 
