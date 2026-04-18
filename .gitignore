@@ -1,0 +1,81 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+build/
+dist/
+
+# Virtual environments
+venv/
+env/
+.venv/
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Experiment / runtime artifacts
+results/
+outputs/
+wandb/
+runs/
+logs/
+*.log
+tmp_protein_design/
+agent_workspace/
+agent_workspace_test/
+
+# Large model weights (should live on HuggingFace, not here)
+*.pt
+*.pth
+*.bin
+*.safetensors
+*.ckpt
+verl/tools/pfam/weights/
+verl/tools/pfam/ProTrek/weights/
+verl/tools/pfam/ProTrek/bin/
+verl/tools/pfam/esm/models--*/
+
+# Large databases (distribute separately; see README)
+verl/tools/pfam/Pfam-A.hmm
+verl/tools/pfam/Pfam-A.seed
+verl/tools/pfam/prosite.dat
+verl/tools/pfam/pfam_index/
+
+# Data (not open-sourced)
+data/proteinllm/*.parquet
+data/proteinllm/*.json
+data/nmr/
+
+# Third-party / unrelated
+recipe/nmr/
+recipe/demystify/
+recipe/dapo/
+recipe/retool/
+recipe/r1/
+recipe/prime/
+recipe/entropy/
+recipe/sppo/
+recipe/spin/
+recipe/one_step_off_policy/
+recipe/langgraph_agent/
+recipe/deepeyes/
+recipe/genrm_remote/
+recipe/infigui-g1/
+recipe/gspo/
+recipe/minicpmo/
+recipe/char_count/
+ACL_exps/
+ACL_rebuttal/
+nmr/
+
+# Scratch / temp
+*.tmp
+.ipynb_checkpoints/

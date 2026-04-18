@@ -1,0 +1,34 @@
+{
+    "sequence": "MQKAVVMDEQAIRRALTRIAHEIIERNKGIDGCVLVGIKTRGIYLARRLAERIEQIEGASVPVGELDITLYRDDLTVKTDDHEPLVKGTNVPFPVTERNVILVDDVLFTGRTVRAAMDAVMDLGRPARIQLAVLVDRGHRELPIRADFVGKNVPTSRSELIVVELSEVDGIDQVSIHEK",
+  
+    "locked":      {"15":"H", "19":"H", "45":"D"},
+    "allowed_set": {"72": ["A","V","L","I","M"]},
+    "banned_set":  {"100": ["P","G"]},
+  
+    "regex_allow":  ["^M.*$","H.{2}H"],       
+    "regex_forbid": ["H{5,}","PPPP"],         
+  
+    "global_soft": {                          
+      "max_cys": 2,
+      "charge_range": [-2, 4],
+      "max_homopolymer": 4
+    },
+  
+    "decode": {
+      "temperature": 1.0,
+      "top_k": 10,
+      "num_candidates": 12,
+      "max_retries": 64
+    },
+  
+    "motif": {
+      "sequence": "HAAH",        
+      "left_linker": "",         
+      "right_linker": "",         
+      "flank_k": 8,               
+      "alpha": 1.0,              
+      "beta": 0.25,             
+      "forbid_overlap_locked": true   
+    }
+  }
+  

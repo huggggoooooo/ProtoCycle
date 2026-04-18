@@ -1,0 +1,256 @@
+tools:
+  - class_name: "verl.tools.protein_tools.ProteinDesignTool"
+    config:
+      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
+      default_topk: 5
+      type: native
+      
+    tool_schema:
+      type: "function"
+      function:
+        name: "function2seq"
+        description: "Retrieve or generate candidate protein scaffolds based on a free-text functional description."
+        parameters:
+          type: "object"
+          properties:
+            text:
+              type: "string"
+              description: "Functional / catalytic / pathway description to guide scaffold retrieval or generation."
+            size:
+              type: "integer"
+              description: "How many candidate sequences to retrieve (optional)."
+            timeout:
+              type: "integer"
+              description: "Max time in seconds to spend retrieving or generating (optional)."
+            organism:
+              type: "string"
+              description: "Optional organism / taxon filter."
+            include_unreviewed:
+              type: "boolean"
+              description: "If true, allow unreviewed sequences (optional)."
+          required: ["text"]
+
+  - class_name: "verl.tools.protein_tools.ProteinDesignTool"
+    config:
+      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
+      default_topk: 5
+      type: native
+      
+    tool_schema:
+      type: "function"
+      function:
+        name: "pathway2seq"
+        description: "Retrieve or generate candidate protein scaffolds from pathway / metabolic context keywords."
+        parameters:
+          type: "object"
+          properties:
+            pathway:
+              type: "string"
+              description: "Name or description of the metabolic / catabolic pathway of interest."
+            size:
+              type: "integer"
+              description: "How many candidate sequences to retrieve (optional)."
+            timeout:
+              type: "integer"
+              description: "Max time in seconds (optional)."
+            organism:
+              type: "string"
+              description: "Optional organism / taxon filter."
+            include_unreviewed:
+              type: "boolean"
+              description: "If true, allow unreviewed sequences (optional)."
+          required: ["pathway"]
+
+  - class_name: "verl.tools.protein_tools.ProteinDesignTool"
+    config:
+      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
+      default_topk: 5
+      type: native
+      
+    tool_schema:
+      type: "function"
+      function:
+        name: "dna_binding2seq"
+        description: "Retrieve or generate DNA-binding protein scaffolds given DNA-binding related terms."
+        parameters:
+          type: "object"
+          properties:
+            text:
+              type: "string"
+              description: "Short DNA-binding related functional / motif description."
+            size:
+              type: "integer"
+              description: "How many candidate sequences to retrieve (optional)."
+            timeout:
+              type: "integer"
+              description: "Max time in seconds (optional)."
+            organism:
+              type: "string"
+              description: "Optional organism / taxon filter."
+            include_unreviewed:
+              type: "boolean"
+              description: "If true, allow unreviewed sequences (optional)."
+          required: ["text"]
+
+  - class_name: "verl.tools.protein_tools.ProteinDesignTool"
+    config:
+      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
+      default_topk: 5
+      type: native
+      
+    tool_schema:
+      type: "function"
+      function:
+        name: "domain2seq"
+        description: "Retrieve or generate scaffolds using structural domain / family keywords (e.g. specific fold/domain)."
+        parameters:
+          type: "object"
+          properties:
+            domain:
+              type: "string"
+              description: "Domain / fold / structural family keyword to match."
+            size:
+              type: "integer"
+              description: "How many candidate sequences to retrieve (optional)."
+            timeout:
+              type: "integer"
+              description: "Max time in seconds (optional)."
+            organism:
+              type: "string"
+              description: "Optional organism / taxon filter."
+            include_unreviewed:
+              type: "boolean"
+              description: "If true, allow unreviewed sequences (optional)."
+          required: ["domain"]
+
+  - class_name: "verl.tools.protein_tools.ProteinDesignTool"
+    config:
+      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
+      default_topk: 5
+      type: native
+      
+    tool_schema:
+      type: "function"
+      function:
+        name: "go2seq"
+        description: "Retrieve or generate scaffolds using Gene Ontology style functional labels."
+        parameters:
+          type: "object"
+          properties:
+            go_term:
+              type: "string"
+              description: "GO-like functional phrase (e.g. 'glycolytic process', 'carbohydrate metabolism')."
+            size:
+              type: "integer"
+              description: "How many candidate sequences to retrieve (optional)."
+            timeout:
+              type: "integer"
+              description: "Max time in seconds (optional)."
+            organism:
+              type: "string"
+              description: "Optional organism / taxon filter."
+            include_unreviewed:
+              type: "boolean"
+              description: "If true, allow unreviewed sequences (optional)."
+          required: ["go_term"]
+
+  - class_name: "verl.tools.protein_tools.ProteinDesignTool"
+    config:
+      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
+      default_topk: 5
+      type: native
+      
+    tool_schema:
+      type: "function"
+      function:
+        name: "cofactor2constraints"
+        description: "Derive binding/coordination constraints for a specific cofactor or ligand, then apply them to top-ranked scaffolds."
+        parameters:
+          type: "object"
+          properties:
+            cofactor:
+              type: "string"
+              description: "Name or description of the cofactor / ligand to coordinate."
+          required: ["cofactor"]
+
+  - class_name: "verl.tools.protein_tools.ProteinDesignTool"
+    config:
+      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
+      default_topk: 5
+      type: native
+      
+    tool_schema:
+      type: "function"
+      function:
+        name: "motif2constraints"
+        description: "Derive site/motif constraints (e.g. active-site proton donor/acceptor) from a motif description and apply them to top-ranked scaffolds."
+        parameters:
+          type: "object"
+          properties:
+            motif:
+              type: "string"
+              description: "Active-site or catalytic motif to enforce (e.g. HXXXXD, glycine-rich loop)."
+          required: ["motif"]
+
+  - class_name: "verl.tools.protein_tools.ProteinDesignTool"
+    config:
+      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
+      default_topk: 5
+      type: native
+      
+    tool_schema:
+      type: "function"
+      function:
+        name: "signal2constraints"
+        description: "Infer localization/signal-peptide constraints (e.g. secretion signals, targeting) and apply them to top-ranked scaffolds."
+        parameters:
+          type: "object"
+          properties: {}
+          required: []    # 在 AgentRuntime 里 signal2constraints 不需要任何参数
+
+  - class_name: "verl.tools.protein_tools.ProteinDesignTool"
+    config:
+      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
+      default_topk: 5
+      type: native
+      
+    tool_schema:
+      type: "function"
+      function:
+        name: "esm_inpaint"
+        description: "Fill or rewrite parts of top-ranked scaffold sequences under internally tracked constraints."
+        parameters:
+          type: "object"
+          properties:
+            accessions:
+              type: "array"
+              description: "Optional explicit list of accession IDs to inpaint. If omitted, use top-ranked scaffolds from tmp_ranked.json."
+              items:
+                type: "string"
+          required: []    # accessions 是可选的
+
+  - class_name: "verl.tools.protein_tools.ProteinDesignTool"
+    config:
+      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
+      default_topk: 5
+      type: native
+      
+    tool_schema:
+      type: "function"
+      function:
+        name: "get_score"
+        description: "Aggregate all known sequences (scaffolds + inpainted) and re-score them with ProTrek; select the current best design and return its sequence."
+        parameters:
+          type: "object"
+          properties: {}
+          required: []    # AgentRuntime.get_score 不需要任何参数

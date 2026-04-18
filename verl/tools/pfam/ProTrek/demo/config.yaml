@@ -1,0 +1,67 @@
+############################################
+#            Config for retrieval          #
+############################################
+retrieval:
+  faiss_config:
+    IO_FLAG_MMAP: True
+
+  sequence_index_dir:
+    - name: Swiss-Prot
+      index_dir: faiss_index/SwissProt/ProTrek_650M_UniRef50/sequence
+
+  structure_index_dir:
+    - name: Swiss-Prot
+      index_dir: faiss_index/SwissProt/ProTrek_650M_UniRef50/structure
+
+  text_index_dir:
+    - name: Swiss-Prot
+      index_dir: faiss_index/SwissProt/ProTrek_650M_UniRef50/text
+
+
+############################################
+#          Config for frontend             #
+############################################
+frontend:
+  sequence: [
+    'Swiss-Prot',
+  ]
+
+  structure: [
+      'Swiss-Prot',
+      'PDB'
+  ]
+
+  text:
+    Swiss-Prot: [
+     "Function",
+     "Miscellaneous",
+     "Caution",
+     "Catalytic activity",
+     "Cofactor",
+     "Activity regulation",
+     "Biophysicochemical properties",
+     "Pathway",
+     "Involvement in disease",
+     "Allergenic properties",
+     "Toxic dose",
+     "Pharmaceutical use",
+     "Disruption phenotype",
+     "Subcellular location",
+     "Post-translational modification",
+     "Subunit",
+     "Domain (non-positional annotation)",
+     "Sequence similarities",
+     "RNA Editing",
+     "Tissue specificity",
+     "Developmental stage",
+     "Induction",
+     "Biotechnology",
+     "Polymorphism",
+     "GO annotation",
+     "Proteomes",
+     "Protein names",
+     "Gene names",
+     "Organism",
+     "Global",
+     "Enzyme commission number",
+   ]

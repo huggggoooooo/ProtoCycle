@@ -1,0 +1,68 @@
+{
+    "sequence": "MQKAVVMDEQAIRRALTRIAHEIIERNKGIDGCVLVGIKTRGIYLARRLAERIEQIEGASVPVGELDITLYRDDLTVKTDDHEPLVKGTNVPFPVTERNVILVDDVLFTGRTVRAAMDAVMDLGRPARIQLAVLVDRGHRELPIRADFVGKNVPTSRSELIVVELSEVDGIDQVSIHEK",
+  
+    "locked":      {"15":"H", "19":"H", "45":"D"},
+    "allowed_set": {"72": ["A","V","L","I","M"]},
+    "banned_set":  {"100": ["P","G"]},
+  
+    "regex_allow": [
+      "^(?!.*C.{0,3}C)(?!.*H.{0,2}H).*$"
+    ],
+    "regex_forbid": [
+      "[KR]{5,}",
+      "H{5,}"
+    ],
+  
+    "global_soft": {
+      "max_cys": 10,
+      "charge_range": [-6, 6],
+      "max_homopolymer": 5,
+      "forbid_substrings": []
+    },
+  
+    "soft_preferences": [
+      { "span": [129, 144], "prefer_set": "DE",  "weight": 0.35 },
+      { "span": [129, 144], "prefer_set": "AST", "weight": 0.10 }
+    ],
+    "window_min_counts": [
+      { "span": [129, 144], "allow_set": "DE", "min_count": 3 }
+    ],
+    "window_charge": [
+      { "span": [129, 144], "max_charge": -2 }
+    ],
+  
+    "decode": {
+      "temperature": 0.9,
+      "top_k": 12,
+      "num_candidates": 24,
+      "max_retries": 64
+    },
+  
+    "motif": {
+        "sequence": "HAAH",        
+        "left_linker": "",         
+        "right_linker": "",         
+        "flank_k": 8,               
+        "alpha": 1.0,              
+        "beta": 0.25,             
+        "forbid_overlap_locked": true   
+      },
+  
+    "_meta": {
+      "detected_cofactor": "mg",
+      "span": [129, 144],
+      "win": 16,
+      "stride": 4,
+      "used_model": true
+    },
+
+    "signal_pep": {
+        "sequence": "MKYLLPTAAAGLLLLAAQPAMA",   
+        "fix_cleavage": true,                    
+        "post_inpaint": false,                 
+        "post_window_left": 6,                   
+        "post_window_right": 2                 
+        }
+
+  }
+  
