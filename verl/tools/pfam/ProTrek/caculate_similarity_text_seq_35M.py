@@ -113,7 +113,7 @@ def main():
         help="Device to run on (cuda or cpu)."
     )
     parser.add_argument(
-        "--model_dir", type=str, default="/path/to/ProtoCycle/pfam/ProTrek/weights/ProTrek_35M",
+        "--model_dir", type=str, default="/path/to/ProTrek_35M",
         help="Path to ProTrek model weights directory."
     )
     parser.add_argument(

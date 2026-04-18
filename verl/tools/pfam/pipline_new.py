@@ -71,23 +71,24 @@ class AgentRuntime:
             "best_seq": None,
         }
 
-        # script registry (fill with your real absolute paths)
+        # script registry: siblings inside verl/tools/pfam/
+        _PFAM_DIR = os.path.dirname(os.path.abspath(__file__))
         self.scripts = {
-            "function2seq": "/path/to/ProtoCycle/verl/tools/pfam/function2seq.py",
-            "pathway2seq": "/path/to/ProtoCycle/verl/tools/pfam/pathway2seq.py",
-            "dna_binding2seq": "/path/to/ProtoCycle/verl/tools/pfam/dna_binding2seq.py",
-            "domain2seq": "/path/to/ProtoCycle/verl/tools/pfam/domain2seq.py",
-            "go2seq": "/path/to/ProtoCycle/verl/tools/pfam/go2seq.py",
+            "function2seq": os.path.join(_PFAM_DIR, "function2seq.py"),
+            "pathway2seq": os.path.join(_PFAM_DIR, "pathway2seq.py"),
+            "dna_binding2seq": os.path.join(_PFAM_DIR, "dna_binding2seq.py"),
+            "domain2seq": os.path.join(_PFAM_DIR, "domain2seq.py"),
+            "go2seq": os.path.join(_PFAM_DIR, "go2seq.py"),
 
-            "build_constraints_from_uniprot": "/path/to/ProtoCycle/verl/tools/pfam/build_constraints_from_uniprot.py",
-            "cofactor2constraints": "/path/to/ProtoCycle/verl/tools/pfam/cofactor2constraints.py",
-            "motif2constraints": "/path/to/ProtoCycle/verl/tools/pfam/motif2constraints.py",
-            "signal2constraints": "/path/to/ProtoCycle/verl/tools/pfam/signal2constraints.py",
+            "build_constraints_from_uniprot": os.path.join(_PFAM_DIR, "build_constraints_from_uniprot.py"),
+            "cofactor2constraints": os.path.join(_PFAM_DIR, "cofactor2constraints.py"),
+            "motif2constraints": os.path.join(_PFAM_DIR, "motif2constraints.py"),
+            "signal2constraints": os.path.join(_PFAM_DIR, "signal2constraints.py"),
 
-            "esm_inpaint": "/path/to/ProtoCycle/verl/tools/pfam/esm/esm_constrain.py",
+            "esm_inpaint": os.path.join(_PFAM_DIR, "esm/esm_constrain.py"),
 
-            # 用于 ProTrek 打分的脚本（复用 caculate_similarity_text_seq.py）
-            "similarity_score": "/path/to/ProtoCycle/verl/tools/pfam/ProTrek/caculate_similarity_text_seq_35M.py",
+            # ProTrek scoring script (reuses caculate_similarity_text_seq_35M.py)
+            "similarity_score": os.path.join(_PFAM_DIR, "ProTrek/caculate_similarity_text_seq_35M.py"),
         }
 
         # map tool name -> handler function

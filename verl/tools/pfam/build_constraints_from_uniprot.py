@@ -138,7 +138,11 @@ def build_locked_from_features(seq: str, data: dict) -> Dict[str, str]:
 def main():
     ap = argparse.ArgumentParser(description="Build constraints.json from UniProt accession via fetch_uniprot_features.py")
     ap.add_argument("--accession", required=True, help="UniProt accession, e.g., A0A010S514")
-    ap.add_argument("--fetch-script", default='/path/to/ProtoCycle/verl/tools/pfam/fetch_uniprot_features.py', help="Path to fetch_uniprot_features.py")
+    ap.add_argument(
+        "--fetch-script",
+        default=os.path.join(os.path.dirname(os.path.abspath(__file__)), "fetch_uniprot_features.py"),
+        help="Path to fetch_uniprot_features.py",
+    )
     ap.add_argument("--out", default='./out', help="Output directory (will contain <ACC>.json and <ACC>_constraints.json)")
     args = ap.parse_args()
 

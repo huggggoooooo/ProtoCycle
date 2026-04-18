@@ -36,10 +36,12 @@ import torch
 from transformers import AutoTokenizer, AutoModelForMaskedLM, BertTokenizer, BertModel
 
 
-# 把你本地 chai-lab 的路径改成自己的
-LOCAL_CHAI_ROOT = "/path/to/ProtoCycle/eval_tools/chai-lab"
+# Path to a local chai-lab checkout. Override with env var CHAI_LAB_ROOT; otherwise
+# defaults to <repo>/eval_tools/chai-lab (not shipped; clone separately).
+_THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+LOCAL_CHAI_ROOT = os.environ.get("CHAI_LAB_ROOT", os.path.join(_THIS_DIR, "chai-lab"))
 
-if LOCAL_CHAI_ROOT not in sys.path:
+if LOCAL_CHAI_ROOT and os.path.isdir(LOCAL_CHAI_ROOT) and LOCAL_CHAI_ROOT not in sys.path:
     sys.path.insert(0, LOCAL_CHAI_ROOT)
 
 
@@ -599,7 +601,10 @@ def main():
     parser.add_argument(
         "--esm_model_path",
         type=str,
-        default="/path/to/ProtoCycle/eval_tools/chai_lab_local/downloads/esm/models--facebook--esm2_t36_3B_UR50D/snapshots/476b639933c8baad5ad09a60ac1a87f987b656fc",
+        default=os.environ.get(
+            "ESM_MODEL_PATH",
+            "/path/to/esm2_t36_3B_UR50D",
+        ),
     )
     parser.add_argument("--esm_device", type=str, default="cuda:0")
 
@@ -621,17 +626,20 @@ def main():
     parser.add_argument(
         "--protrek_python",
         type=str,
-        default="/path/to/miniconda3/envs/protrek/bin/python",
+        default=os.environ.get("PROTREK_ENV_PYTHON", "/path/to/miniconda3/envs/protrek/bin/python"),
     )
     parser.add_argument(
         "--protrek_script",
         type=str,
-        default="/path/to/ProtoCycle/verl/tools/pfam/ProTrek/caculate_similarity_text_seq.py",
+        default=os.path.abspath(os.path.join(
+            _THIS_DIR, "..", "verl", "tools", "pfam", "ProTrek",
+            "caculate_similarity_text_seq.py",
+        )),
     )
     parser.add_argument(
         "--protrek_model_dir",
         type=str,
-        default="/path/to/ProtoCycle/verl/tools/pfam/ProTrek/weights/ProTrek_650M",
+        default=os.environ.get("PROTREK_650M_DIR", "/path/to/ProTrek_650M"),
     )
     parser.add_argument(
         "--skip_protrek",
@@ -648,13 +656,16 @@ def main():
     parser.add_argument(
         "--retrieval_script",
         type=str,
-        default="/path/to/ProtoCycle/verl/tools/pfam/ProTrek/caculate_similarity_text_seq_35M.py",
+        default=os.path.abspath(os.path.join(
+            _THIS_DIR, "..", "verl", "tools", "pfam", "ProTrek",
+            "caculate_similarity_text_seq_35M.py",
+        )),
         help="ProTrek script for Retrieval Accuracy (35M).",
     )
     parser.add_argument(
         "--retrieval_model_dir",
         type=str,
-        default="/path/to/ProtoCycle/verl/tools/pfam/ProTrek/weights/ProTrek_35M",
+        default=os.environ.get("PROTREK_35M_DIR", "/path/to/ProTrek_35M"),
         help="Model dir for 35M ProTrek used in retrieval.",
     )
     parser.add_argument(
@@ -679,25 +690,25 @@ def main():
     parser.add_argument(
         "--evollama_config",
         type=str,
-        default="/path/to/ProtoCycle/eval_tools/Evolla/config/Evolla_10B.yaml",
-        help="Path to Evolla/EvoLlama config yaml.",
+        default=os.environ.get("EVOLLAMA_CONFIG", "/path/to/Evolla/config/Evolla_10B.yaml"),
+        help="Path to Evolla/EvoLlama config yaml (external, not shipped).",
     )
     parser.add_argument(
         "--evollama_python",
         type=str,
-        default="/path/to/miniconda3/envs/Evolla/bin/python",
+        default=os.environ.get("EVOLLAMA_PYTHON", "/path/to/miniconda3/envs/Evolla/bin/python"),
         help="Python executable in Evolla conda env.",
     )
     parser.add_argument(
         "--evollama_script",
         type=str,
-        default="/path/to/ProtoCycle/eval_tools/Evolla/compute_evollama_score.py",
-        help="Path to evollama_score.py script.",
+        default=os.environ.get("EVOLLAMA_SCRIPT", "/path/to/Evolla/compute_evollama_score.py"),
+        help="Path to compute_evollama_score.py (external, not shipped).",
     )
     parser.add_argument(
         "--evollama_pubmedbert_path",
         type=str,
-        default="/path/to/ProtoCycle/eval_tools/Evolla/ckpt/huggingface/pubmedbert-base-embeddings",
+        default=os.environ.get("EVOLLAMA_PUBMEDBERT", "/path/to/pubmedbert-base-embeddings"),
         help="Local path to pubmedbert-base-embeddings.",
     )
     parser.add_argument(

@@ -8,8 +8,8 @@ natural-language design requirement, the model iteratively invokes specialized
 biology tools (scaffold retrieval, constraint building, ESM-based refinement,
 ProTrek scoring) and outputs a final amino-acid sequence.
 
-> This repository contains our protein-specific recipe, tools, and reward.
-> It is built on top of
+> This repository contains our protein-specific recipe, tools, reward and
+> evaluation pipeline. It is built on top of
 > [Open-AgentRL](https://github.com/Gen-Verse/Open-AgentRL) /
 > [VeRL](https://github.com/volcengine/verl), which provides the underlying
 > agentic RL training framework.
@@ -18,22 +18,23 @@ ProTrek scoring) and outputs a final amino-acid sequence.
 
 ```
 protocycle/
-├── recipe/protein/               # Training & evaluation scripts
+├── infer_tools.py                # Multi-turn tool-calling inference entry point
+├── infer_tools.sh                # End-to-end inference + metrics pipeline
+├── recipe/protein/               # Training scripts
 │   ├── reward.py                 # GRPO-TCR reward + custom dataset class
 │   ├── protein_dataset.py        # Multi-turn SFT dataset adapter
 │   ├── tool_config.yaml          # 10 tool schemas for agentic rollout
-│   ├── grpo_tcr_qwen2_7b.sh      # RL (GRPO-TCR) main recipe
 │   ├── qwen2_7b_sft.sh           # Cold-start SFT recipe
-│   └── ...                       # Llama variants, 4-GPU variants, infer/eval
+│   └── grpo_tcr_qwen2_7b.sh      # Agentic RL (GRPO-TCR) recipe
 ├── verl/
 │   ├── tools/
 │   │   ├── protein_tools.py      # Agentic tool entry (registered to VeRL)
 │   │   └── pfam/                 # Biology tool implementations
 │   │       ├── pipline_new.py    # Main AgentRuntime
 │   │       ├── function2seq.py   # Stage-1: function -> scaffolds
-│   │       ├── pathway2seq.py    # Stage-1: pathway -> scaffolds
-│   │       ├── domain2seq.py     # Stage-1: domain -> scaffolds
-│   │       ├── go2seq.py         # Stage-1: GO term -> scaffolds
+│   │       ├── pathway2seq.py
+│   │       ├── domain2seq.py
+│   │       ├── go2seq.py
 │   │       ├── dna_binding2seq.py
 │   │       ├── cofactor2constraints.py  # Stage-2
 │   │       ├── motif2constraints.py     # Stage-2
@@ -44,9 +45,16 @@ protocycle/
 │       └── reward_manager/
 │           └── protein.py        # ProteinRewardManager (VeRL plugin)
 ├── eval_tools/                   # Metric / scoring utilities
+│   ├── extract_answer.py
+│   ├── compute_metrics.py
+│   ├── compute_metrics_multi_gpu.py
+│   ├── compute_chai_scores.py
+│   ├── summarize_metrics.py
+│   ├── compute_metrics.sh
+│   └── example.fasta
 ├── data/
 │   └── proteinllm/
-│       └── protein_eval_30.csv   # Sample evaluation set
+│       └── protein_eval_30.csv   # Small sample evaluation set
 ├── LICENSE                       # Apache-2.0
 └── README.md
 ```
@@ -86,21 +94,41 @@ pip install -e .[vllm]
 # 2) Overlay this repository on top of Open-AgentRL
 cd ..
 git clone git@github.com:huggggoooooo/ProtoCycle.git
-# Merge protein-specific code into Open-AgentRL
-cp -r ProtoCycle/recipe/protein         Open-AgentRL/recipe/
-cp    ProtoCycle/verl/tools/protein_tools.py         Open-AgentRL/verl/tools/
-cp -r ProtoCycle/verl/tools/pfam                     Open-AgentRL/verl/tools/
-cp    ProtoCycle/verl/workers/reward_manager/protein.py \
-                                                     Open-AgentRL/verl/workers/reward_manager/
-cp -r ProtoCycle/eval_tools                          Open-AgentRL/
-cp -r ProtoCycle/data/proteinllm                     Open-AgentRL/data/
+cp -r  ProtoCycle/recipe/protein                        Open-AgentRL/recipe/
+cp     ProtoCycle/verl/tools/protein_tools.py           Open-AgentRL/verl/tools/
+cp -r  ProtoCycle/verl/tools/pfam                       Open-AgentRL/verl/tools/
+cp     ProtoCycle/verl/workers/reward_manager/protein.py \
+                                                        Open-AgentRL/verl/workers/reward_manager/
+cp -r  ProtoCycle/eval_tools                            Open-AgentRL/
+cp -r  ProtoCycle/data/proteinllm                       Open-AgentRL/data/
+cp     ProtoCycle/infer_tools.py  ProtoCycle/infer_tools.sh  Open-AgentRL/
 ```
 
-### External Assets
+All paths inside this repo are **relative to the repository root** and are
+resolved automatically by the scripts. External resources (conda envs, model
+weights, databases) are referenced via environment variables; see the next
+section.
 
-The biology tools require several large external resources. Download them
-separately and place them under the paths below (or edit `tool_config.yaml` /
-the Python constants to point elsewhere):
+## Configuration
+
+All scripts read the following environment variables to locate external
+resources. Export them once in your shell (or in a wrapper script):
+
+| Variable | Meaning |
+|----------|---------|
+| `CONDA_ROOT` | Root of your miniconda install, e.g. `/home/user/miniconda3` |
+| `MODEL_DIR` | Absolute path to a base or RL checkpoint |
+| `MODEL_PATH` | Base-model HF snapshot (used by `qwen2_7b_sft.sh` / `grpo_tcr_qwen2_7b.sh`) |
+| `PROTREK_ENV_PYTHON` | Python in the `protrek` conda env, e.g. `$CONDA_ROOT/envs/protrek/bin/python` |
+| `PROTREK_35M_DIR`, `PROTREK_650M_DIR` | Local paths to the ProTrek checkpoints |
+| `ESM_MODEL_PATH` | Local HF snapshot of `facebook/esm2_t36_3B_UR50D` |
+| `CHAI_LAB_ROOT` | Path to a local `chai-lab` checkout (optional, only for Chai-1 metrics) |
+
+Any remaining `/path/to/...` literals left in the code are external resources
+— either download them and export the matching env var, or pass them as CLI
+arguments (most scripts accept flags that override the defaults).
+
+### External Assets
 
 | Asset | Purpose | Source |
 |-------|---------|--------|
@@ -109,6 +137,7 @@ the Python constants to point elsewhere):
 | Pfam-A.hmm, Pfam-A.seed | Profile HMM scans | [Pfam FTP](https://www.ebi.ac.uk/interpro/) |
 | Foldseek binary | Structure search (optional) | [Foldseek](https://github.com/steineggerlab/foldseek) |
 | PROSITE database (`prosite.dat`) | Motif lookup | [PROSITE](https://prosite.expasy.org/) |
+| Chai-1 | Optional structure-prediction metrics | [chai-lab](https://github.com/chaidiscovery/chai-lab) |
 
 ### Model Checkpoints
 
@@ -121,13 +150,10 @@ Our trained model weights are hosted on Hugging Face:
 
 ## Training
 
-Before running any script, edit the paths at the top of the shell file —
-placeholders such as `/path/to/ProtoCycle`, `/path/to/models/...`,
-`/path/to/miniconda3/envs/...` must be replaced with your actual locations.
-
 ### Cold-Start SFT
 
 ```bash
+export MODEL_PATH=/abs/path/to/Qwen2.5-7B-Instruct
 bash recipe/protein/qwen2_7b_sft.sh
 ```
 
@@ -142,6 +168,7 @@ python3 -m verl.model_merger merge --backend fsdp \
 ### Agentic RL (GRPO-TCR)
 
 ```bash
+export MODEL_PATH=$SAVE_PATH/global_step_XXX/huggingface   # SFT checkpoint
 bash recipe/protein/grpo_tcr_qwen2_7b.sh
 ```
 
@@ -149,21 +176,39 @@ We trained on one 8×A100 (80GB) node with batch size 64, 3 epochs.
 
 ## Evaluation
 
-A small demo evaluation set is provided:
+A small sample evaluation set lives at `data/proteinllm/protein_eval_30.csv`.
+The end-to-end evaluation pipeline has three stages:
+
+1. **Inference** (`infer_tools.py`) — runs multi-turn tool-augmented rollout
+   with the trained model and saves each trajectory to JSONL.
+2. **Answer extraction** (`eval_tools/extract_answer.py`) — parses the final
+   `<answer>` segment from each trajectory into a CSV.
+3. **Metric computation** (`eval_tools/compute_metrics_multi_gpu.py`) —
+   computes ESM pseudo-perplexity, pTM / pLDDT (Chai-1, optional),
+   ProTrek similarity, and retrieval accuracy.
+
+The three stages can be run individually or end-to-end through
+`infer_tools.sh`:
 
 ```bash
-ls data/proteinllm/protein_eval_30.csv
+export CONDA_ROOT=/abs/path/to/miniconda3
+export MODEL_DIR=/abs/path/to/ProtoCycle-7B          # or any HF-format checkpoint
+export MODEL_NAME=ProtoCycle-7B                      # used in output filenames
+bash infer_tools.sh
 ```
 
-Run inference then compute metrics:
+This will create `baseline_results/${MODEL_NAME}.jsonl`,
+`baseline_results/${MODEL_NAME}.csv`, and
+`baseline_results/metrics/${MODEL_NAME}_metrics.csv`.
+
+You can also invoke metrics independently:
 
 ```bash
-bash recipe/protein/qwen2_7b_infer.sh
-bash eval_tools/compute_metrics.sh
+bash eval_tools/compute_metrics.sh <input_csv> <output_metrics_csv>
 ```
 
-Scoring uses ProTrek similarity and, optionally, Chai-1 structure prediction
-(`eval_tools/compute_chai_scores.py`).
+Optional flags for `compute_metrics_multi_gpu.py` include `--skip_chai`,
+`--skip_protrek`, `--skip_retrieval`, and `--use_evollama`.
 
 ## License
 

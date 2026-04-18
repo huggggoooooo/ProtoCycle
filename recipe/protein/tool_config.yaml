@@ -1,7 +1,7 @@
 tools:
   - class_name: "verl.tools.protein_tools.ProteinDesignTool"
     config:
-      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      base_tmp_root: "./tmp/protein_design_tasks"
       protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
       default_topk: 5
       type: native
@@ -33,7 +33,7 @@ tools:
 
   - class_name: "verl.tools.protein_tools.ProteinDesignTool"
     config:
-      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      base_tmp_root: "./tmp/protein_design_tasks"
       protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
       default_topk: 5
       type: native
@@ -65,7 +65,7 @@ tools:
 
   - class_name: "verl.tools.protein_tools.ProteinDesignTool"
     config:
-      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      base_tmp_root: "./tmp/protein_design_tasks"
       protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
       default_topk: 5
       type: native
@@ -97,7 +97,7 @@ tools:
 
   - class_name: "verl.tools.protein_tools.ProteinDesignTool"
     config:
-      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      base_tmp_root: "./tmp/protein_design_tasks"
       protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
       default_topk: 5
       type: native
@@ -129,7 +129,7 @@ tools:
 
   - class_name: "verl.tools.protein_tools.ProteinDesignTool"
     config:
-      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      base_tmp_root: "./tmp/protein_design_tasks"
       protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
       default_topk: 5
       type: native
@@ -161,7 +161,7 @@ tools:
 
   - class_name: "verl.tools.protein_tools.ProteinDesignTool"
     config:
-      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      base_tmp_root: "./tmp/protein_design_tasks"
       protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
       default_topk: 5
       type: native
@@ -181,7 +181,7 @@ tools:
 
   - class_name: "verl.tools.protein_tools.ProteinDesignTool"
     config:
-      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      base_tmp_root: "./tmp/protein_design_tasks"
       protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
       default_topk: 5
       type: native
@@ -201,7 +201,7 @@ tools:
 
   - class_name: "verl.tools.protein_tools.ProteinDesignTool"
     config:
-      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      base_tmp_root: "./tmp/protein_design_tasks"
       protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
       default_topk: 5
       type: native
@@ -218,7 +218,7 @@ tools:
 
   - class_name: "verl.tools.protein_tools.ProteinDesignTool"
     config:
-      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      base_tmp_root: "./tmp/protein_design_tasks"
       protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
       default_topk: 5
       type: native
@@ -240,7 +240,7 @@ tools:
 
   - class_name: "verl.tools.protein_tools.ProteinDesignTool"
     config:
-      base_tmp_root: "/path/to/ProtoCycle/tmp_protein_design"
+      base_tmp_root: "./tmp/protein_design_tasks"
       protrek_env_python: "/path/to/miniconda3/envs/protrek/bin/python"
       default_topk: 5
       type: native

@@ -20,16 +20,17 @@ extract_eval_results.py
   pred_seq
   has_tag        # 1: 有 <answer> 且解析出了非空序列；0: 否则
 
-用法示例：
-python extract_eval_results.py \
-  --parquet /path/to/ProtoCycle/data/proteinllm/desc2seq_agent_eval_clever_100.parquet \
-  --jsonl   /path/to/your/eval_results.jsonl \
-  --out_csv /path/to/merged_eval_results.csv
+Usage:
+python extract_answer.py \
+  --parquet data/proteinllm/desc2seq_agent_eval.parquet \
+  --jsonl   baseline_results/infer_results.jsonl \
+  --out_csv baseline_results/merged_eval_results.csv
 """
 
 import argparse
 import ast
 import json
+import os
 import re
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -243,8 +244,14 @@ if __name__ == "__main__":
     parser.add_argument(
         "--parquet",
         type=str,
-        default='/path/to/ProtoCycle/data/proteinllm/desc2seq_agent_eval_clever_100.parquet',
-        help="原始 eval parquet 路径",
+        default=os.environ.get(
+            "EVAL_PARQUET",
+            os.path.abspath(os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                "..", "data", "proteinllm", "desc2seq_agent_eval.parquet",
+            )),
+        ),
+        help="original eval parquet path",
     )
     parser.add_argument(
         "--jsonl",

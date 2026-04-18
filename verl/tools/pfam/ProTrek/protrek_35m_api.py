@@ -57,9 +57,9 @@ def _run_protrek_script(
         with open(in_path, "w", encoding="utf-8") as f_in:
             json.dump(sequences, f_in, ensure_ascii=False, indent=2)
 
-        script_path = (
-            "/path/to/ProtoCycle/"
-            "verl/tools/pfam/ProTrek/caculate_similarity_text_seq_35M.py"
+        script_path = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "caculate_similarity_text_seq_35M.py",
         )
         topk_val = topk if topk and topk > 0 else 0
 
@@ -167,16 +167,18 @@ async def protrek_score_35m(query: ProtrekScoreRequest):
 #       ESM constrain 部分
 # --------------------------
 
-# esm_constrain.py 的路径（可以用环境变量覆盖）
+# esm_constrain.py path; override via ESM_CONSTRAIN_SCRIPT env var if needed
 ESM_CONSTRAIN_SCRIPT = os.getenv(
     "ESM_CONSTRAIN_SCRIPT",
-    "/path/to/ProtoCycle/verl/tools/pfam/esm/esm_constrain.py",
+    os.path.abspath(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            "..", "esm", "esm_constrain.py",
+        )
+    ),
 )
 
-DEFAULT_ESM_MODEL_DIR = (
-    "/path/to/ProtoCycle/pfam/esm/"
-    "models--facebook--esm2_t36_3B_UR50D/snapshots/476b639933c8baad5ad09a60ac1a87f987b656fc"
-)
+DEFAULT_ESM_MODEL_DIR = os.environ.get("ESM_MODEL_PATH", "/path/to/esm2_t36_3B_UR50D")
 
 # 并发控制：最多同时跑多少个 ESM 任务
 MAX_ESM_CONCURRENCY = int(os.getenv("ESM_MAX_CONCURRENCY", "2"))

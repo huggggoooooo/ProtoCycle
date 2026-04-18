@@ -65,7 +65,7 @@ def parse_prosite(dat_path: str):
     return out
 
 def main():
-    dat = sys.argv[1] if len(sys.argv) > 1 else "/path/to/ProtoCycle/pfam/prosite.dat"
+    dat = sys.argv[1] if len(sys.argv) > 1 else "/path/to/prosite.dat"
     if not os.path.exists(dat):
         print(f"[ERR] not found: {dat}")
         sys.exit(1)

@@ -150,7 +150,7 @@ def main():
     ap.add_argument("--in_fasta", help="FASTA with one or more sequences")
     ap.add_argument("--seq", help="Single sequence string (will be named 'seq1')")
     # model
-    ap.add_argument("--model-path", default='/path/to/ProtoCycle/esm/models--facebook--esm2_t36_3B_UR50D/snapshots/476b639933c8baad5ad09a60ac1a87f987b656fc')
+    ap.add_argument("--model-path", default='/path/to/esm2_t36_3B_UR50D')
     ap.add_argument("--dtype", default="bf16", choices=["bf16","fp16","fp32"])
     ap.add_argument("--device-map", default="auto", choices=["auto","balanced","cpu","none"])
     ap.add_argument("--quant", default="none", choices=["none","8bit","4bit"])

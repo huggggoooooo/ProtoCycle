@@ -234,10 +234,10 @@ def main():
     parser.add_argument(
         "--metrics_all",
         type=str,
-        default="/path/to/ProtoCycle/baseline_results/metrics/metrics_all.csv",
+        default=None,
         help=(
-            "汇总文件 metrics_all.csv 路径；"
-            "若不指定，默认写在 metrics_csv 所在目录下的 metrics_all.csv"
+            "Aggregated metrics_all.csv path. If omitted, defaults to "
+            "<dir of metrics_csv>/metrics_all.csv."
         ),
     )
     parser.add_argument(

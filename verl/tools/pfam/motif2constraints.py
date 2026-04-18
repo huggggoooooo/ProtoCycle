@@ -491,8 +491,9 @@ def build_motif_dict(seq: str) -> dict:
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--json", required=True)
-    ap.add_argument("--classes", default='/path/to/ProtoCycle/verl/tools/pfam/elm_classes.csv')
-    ap.add_argument("--instances", default='/path/to/ProtoCycle/verl/tools/pfam/elm_instances.csv')
+    _THIS_DIR = os.path.dirname(os.path.abspath(__file__))
+    ap.add_argument("--classes", default=os.path.join(_THIS_DIR, "elm_classes.csv"))
+    ap.add_argument("--instances", default=os.path.join(_THIS_DIR, "elm_instances.csv"))
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--pattern")    # 直接给 motif pattern (如 "YXXL")
     g.add_argument("--desc")       # 自然语言描述

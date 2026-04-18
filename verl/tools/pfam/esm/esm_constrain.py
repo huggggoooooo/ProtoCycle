@@ -1013,7 +1013,7 @@ def main():
     parser.add_argument(
         "--model_dir",
         type=str,
-        default="/path/to/ProtoCycle/pfam/esm/models--facebook--esm2_t36_3B_UR50D/snapshots/476b639933c8baad5ad09a60ac1a87f987b656fc",
+        default="/path/to/esm2_t36_3B_UR50D",
         help="Local ESM checkpoint dir",
     )
     parser.add_argument(

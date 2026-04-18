@@ -1033,7 +1033,7 @@ def main():
     ap.add_argument("--stride", type=int, default=4,
                     help="窗口滑动步长 (默认4)")
     ap.add_argument("--prosite_index",
-                    default="/path/to/ProtoCycle/pfam/prosite_index.json",
+                    default="./pfam/prosite_index.json",
                     help="PROSITE 索引 JSON 路径")
     args = ap.parse_args()
 

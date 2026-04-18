@@ -1,50 +1,56 @@
+#!/bin/bash
 set -x
-cd /path/to/ProtoCycle
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="${PROJECT_ROOT:-$(cd "${SCRIPT_DIR}/../.." && pwd)}"
+cd "${PROJECT_ROOT}"
 
 export VLLM_USE_V1=1
-# ================= data/model/tool =================
-open_agent_rl=/path/to/ProtoCycle/data/proteinllm/desc2seq_agent_grpo_10000.parquet
-eval_rl=/path/to/ProtoCycle/data/proteinllm/desc2seq_agent_eval_10.parquet
-model_path=/path/to/ProtoCycle/results/qwen2.5-7b-desc2seq-clever-ep5
+
+# ================= data / model / tool =================
+# Override via environment variables if your layout differs.
+open_agent_rl="${TRAIN_DATA:-${PROJECT_ROOT}/data/proteinllm/desc2seq_agent_grpo_10000.parquet}"
+eval_rl="${EVAL_DATA:-${PROJECT_ROOT}/data/proteinllm/desc2seq_agent_eval_10.parquet}"
+# SFT checkpoint to start RL from. Export MODEL_PATH if yours is elsewhere.
+model_path="${MODEL_PATH:-${PROJECT_ROOT}/results/qwen2.5-7b-desc2seq-clever-ep5}"
 
 train_files="['$open_agent_rl']"
 test_files="['$eval_rl']"
 
-# tool
-tool_config_path=/path/to/ProtoCycle/recipe/protein/tool_config.yaml
+# tool config
+tool_config_path="${TOOL_CONFIG_PATH:-${PROJECT_ROOT}/recipe/protein/tool_config.yaml}"
 
-# wandb
+# experiment metadata
 project_name=protein_grpo
 experiment_name=Qwen2.5-7B_simple_reward
-default_local_dir=/path/to/ProtoCycle/results/qwen2.5-7b-desc2seq-clever-ep5/rl/$experiment_name
+default_local_dir="${SAVE_PATH:-${PROJECT_ROOT}/results/qwen2.5-7b-desc2seq-clever-ep5/rl/${experiment_name}}"
 
 # ================= algorithm =================
 adv_estimator=grpo
 
-# remove KL divergence ✓
+# remove KL divergence
 use_kl_in_reward=False
 kl_coef=0.0
 use_kl_loss=False
 kl_loss_coef=0.0
 
-# clip higher ✓
+# clip higher
 clip_ratio_low=0.2
 clip_ratio_high=0.28
 
-# loss agg ✓
+# loss agg
 loss_agg_mode="token-mean"
 
-# Dymaic Sampleing, we do not utilize dynamic sampling here since it is too expensive for agentic rl x
+# Dynamic sampling
 enable_filter_groups=True
 filter_groups_metric=acc
 max_num_gen_batches=10
 
-#Overlong Reward Shaping ✓
+# Overlong reward shaping
 reward_manager=protein
 enable_overlong_buffer=True
 overlong_buffer_len=$((1024 * 4))
 overlong_penalty_factor=1.0
-
 
 max_turns=16
 max_prompt_length=8192
@@ -56,7 +62,7 @@ ppo_mini_batch_size=16
 n_resp_per_prompt=8
 n_resp_per_prompt_val=1
 
-# ================= perfomance =================
+# ================= performance =================
 infer_tp=4 # vllm
 train_sp=4 # train
 offload=True
@@ -68,15 +74,7 @@ log_prob_max_token_len_per_gpu=$(( actor_max_token_len_per_gpu * 4 ))
 ROLLOUT_SAVE_PATH="${default_local_dir}/rollout"
 VAL_SAVE_PATH="${default_local_dir}/validation"
 
-# Create rollout save directory
-if [ ! -d "$ROLLOUT_SAVE_PATH" ]; then
-    mkdir -p $ROLLOUT_SAVE_PATH
-fi
-# Create validation save directory
-if [ ! -d "$VAL_SAVE_PATH" ]; then
-    mkdir -p $VAL_SAVE_PATH
-fi
-
+mkdir -p "$ROLLOUT_SAVE_PATH" "$VAL_SAVE_PATH"
 
 python3 -m verl.trainer.main_ppo \
     algorithm.adv_estimator=$adv_estimator \
@@ -143,5 +141,4 @@ python3 -m verl.trainer.main_ppo \
     trainer.save_freq=15 \
     trainer.default_local_dir=$default_local_dir \
     trainer.test_freq=10 \
-    trainer.total_epochs=3 $@ 
-
+    trainer.total_epochs=3 $@
