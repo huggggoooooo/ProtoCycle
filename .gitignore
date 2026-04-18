@@ -79,3 +79,11 @@ nmr/
 # Scratch / temp
 *.tmp
 .ipynb_checkpoints/
+
+# Runtime caches
+.uniprot_seq_cache.json
+*.lock
+.locks/
+
+# Stray test fixtures
+verl/tools/pfam/test.json
