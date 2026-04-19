@@ -133,7 +133,7 @@ arguments (most scripts accept flags that override the defaults).
 | Asset | Purpose | Source |
 |-------|---------|--------|
 | ProTrek 35M / 650M checkpoints | Stage-3 scoring | [ProTrek repo](https://github.com/westlake-repl/ProTrek) |
-| ESM2 3B (`facebook/esm2_t36_3B_UR50D`) | Stage-3 inpainting | HuggingFace |
+| ESM-2 3B (`facebook/esm2_t36_3B_UR50D`) | Stage-3 inpainting | [HuggingFace](https://huggingface.co/facebook/esm2_t36_3B_UR50D) |
 | Pfam-A.hmm, Pfam-A.seed | Profile HMM scans | [Pfam FTP](https://www.ebi.ac.uk/interpro/) |
 | Foldseek binary | Structure search (optional) | [Foldseek](https://github.com/steineggerlab/foldseek) |
 | PROSITE database (`prosite.dat`) | Motif lookup | [PROSITE](https://prosite.expasy.org/) |
@@ -147,6 +147,23 @@ Our trained model weights are hosted on Hugging Face:
 |-------|-------------|------|
 | ProtoCycle-7B-SFT | Cold-start SFT checkpoint (Qwen2.5-7B base) | [Huggggooo/ProtoCycle-7B-SFT](https://huggingface.co/Huggggooo/ProtoCycle-7B-SFT) |
 | ProtoCycle-7B | GRPO-TCR RL checkpoint | [Huggggooo/ProtoCycle-7B](https://huggingface.co/Huggggooo/ProtoCycle-7B) |
+| ESM-2 3B | Protein language model for Stage-3 inpainting | [facebook/esm2_t36_3B_UR50D](https://huggingface.co/facebook/esm2_t36_3B_UR50D) |
+
+### Training Data
+
+Our training data is hosted on Hugging Face:
+
+| Dataset | Size | Purpose | Link |
+|---------|------|---------|------|
+| SFT trajectories | 2,000 multi-turn dialogues | Cold-start supervised fine-tuning | [Huggggooo/ProtoCycle-Data](https://huggingface.co/datasets/Huggggooo/ProtoCycle-Data) (`sft/`) |
+| RL prompts | 10,000 prompts | GRPO-TCR reinforcement learning | [Huggggooo/ProtoCycle-Data](https://huggingface.co/datasets/Huggggooo/ProtoCycle-Data) (`rl/`) |
+
+```python
+# Quick start
+from datasets import load_dataset
+sft_data = load_dataset("Huggggooo/ProtoCycle-Data", data_dir="sft", split="train")
+rl_data  = load_dataset("Huggggooo/ProtoCycle-Data", data_dir="rl",  split="train")
+```
 
 ## Training
 
