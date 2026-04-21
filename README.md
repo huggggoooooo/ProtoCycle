@@ -2,6 +2,34 @@
 
 **Agentic Protein Design with Reinforcement Learning**
 
+[![Paper](https://img.shields.io/badge/arXiv-2604.16896-b31b1b.svg)](https://arxiv.org/abs/2604.16896)
+[![Venue](https://img.shields.io/badge/ACL%202026-Findings-blue.svg)](https://arxiv.org/abs/2604.16896)
+[![SFT Model](https://img.shields.io/badge/🤗%20Model-ProtoCycle--7B--SFT-yellow)](https://huggingface.co/Huggggooo/ProtoCycle-7B-SFT)
+[![RL Model](https://img.shields.io/badge/🤗%20Model-ProtoCycle--7B-yellow)](https://huggingface.co/Huggggooo/ProtoCycle-7B)
+
+> 📄 **Accepted to Findings of ACL 2026.** Paper: *ProtoCycle: Reflective Tool-Augmented Planning for Text-Guided Protein Design* — [arXiv:2604.16896](https://arxiv.org/abs/2604.16896).
+
+## Citation
+
+If you find this work useful, please cite:
+
+```bibtex
+@inproceedings{ge2026protocycle,
+  title     = {ProtoCycle: Reflective Tool-Augmented Planning for Text-Guided Protein Design},
+  author    = {Ge, Yutang and Zhao, Guojiang and Li, Sihang and Cheng, Zheng and
+               Zhao, Zifeng and Xia, Hanchen and Ke, Guolin and Zhang, Linfeng and
+               Gao, Zhifeng and Wang, Yuguang},
+  booktitle = {Findings of the Association for Computational Linguistics: ACL 2026},
+  year      = {2026},
+  eprint    = {2604.16896},
+  archivePrefix = {arXiv},
+  primaryClass  = {q-bio.QM},
+  url       = {https://arxiv.org/abs/2604.16896}
+}
+```
+
+---
+
 ProtoCycle trains LLMs to perform multi-step, tool-augmented protein design via
 GRPO-TCR (Group Relative Policy Optimization with Tool-Call Rewards). Given a
 natural-language design requirement, the model iteratively invokes specialized
@@ -251,19 +279,6 @@ We thank the authors and contributors of:
 - The [Pfam](https://www.ebi.ac.uk/interpro/) / [PROSITE](https://prosite.expasy.org/)
   / [ELM](http://elm.eu.org/) resources for family, motif, and linear motif
   annotations.
-
-<!-- ## Citation
-
-If you find this work useful, please cite:
-
-```bibtex
-@misc{protocycle2026,
-  title  = {ProtoCycle: Agentic Protein Design with Reinforcement Learning},
-  author = {TODO: add authors},
-  year   = {2026},
-  note   = {TODO: arXiv / venue info}
-}
-``` -->
 
 ## Star History
 
