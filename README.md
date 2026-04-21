@@ -132,35 +132,49 @@ cp -r  ProtoCycle/data/proteinllm                       Open-AgentRL/data/
 cp     ProtoCycle/infer_tools.py  ProtoCycle/infer_tools.sh  Open-AgentRL/
 ```
 
-### (Required for Evaluation) `protein+chai` conda environment
+### (Required) `protein+chai` conda environment — tool runtime + evaluation
 
-Evaluation and the final stage of `infer_tools.sh` need a **separate** conda
-environment that provides Chai-1, ESM and structural biology dependencies
-(OpenMM, PDBFixer, biotite, etc.). The default env name expected by the
-scripts is `protein+chai` (literally, with a `+` sign — matches our original
-setup). Override by exporting `PROTEIN_CHAI_ENV` if you prefer a different
-name / location.
+`protein+chai` is **not only an evaluation env** — it is also the env under
+which the biology tools actually execute at rollout / inference time. The
+agent's `AgentRuntime` subprocess-calls scripts such as `text2motif.py`
+(`biopython` / Prosite), `search_family.py` (`whoosh`), `function2seq.py` /
+`go2seq.py` / `domain2seq.py` / `dna_binding2seq.py` / `pathway2seq.py`
+(`requests` / `urllib3`), `refine_from_sequences.py` and `esm/esm_constrain.py`
+(`torch` + `transformers.EsmTokenizer`), all of which inherit the caller's
+Python. Evaluation (`compute_metrics.py`) on top additionally imports
+`chai_lab`, `openmm`, `pdbfixer`, `biotite` and `gemmi`. All of these live in
+this one env.
+
+The default env name expected by the scripts is `protein+chai` (literally,
+with a `+` sign — matches our original setup). Override by exporting
+`PROTEIN_CHAI_ENV` if you prefer a different name or location.
 
 ```bash
-# 3) Build the evaluation env (CUDA 12.1 wheels; adjust for your CUDA)
+# 3) Build the tool-runtime + evaluation env (CUDA 12.1 wheels; adjust for your CUDA)
 conda create -n "protein+chai" python=3.10 -y
 conda activate "protein+chai"
 
 # PyTorch 2.3.1 + CUDA 12.1 (matches our tested setup)
 pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cu121
 
-# Chai-1 + protein / structural biology stack
+# Tool-runtime stack (needed at rollout / inference time)
+pip install \
+  biopython==1.83 \
+  whoosh==2.7.4 \
+  requests \
+  urllib3 \
+  transformers==4.45.2 \
+  huggingface_hub==0.26.1
+
+# Chai-1 + structural biology stack (needed at evaluation time)
 pip install \
   chai_lab==0.1.0 \
   fair-esm==2.0.0 \
-  transformers==4.45.2 \
-  biopython==1.83 \
   biotite==0.37.0 \
   gemmi==0.6.3 \
   rdkit==2023.9.5 \
   einops==0.8.0 \
   omegaconf==2.3.0 \
-  huggingface_hub==0.26.1 \
   pandas==2.2.3 \
   numpy==1.24.3
 
@@ -175,6 +189,19 @@ export CHAI_LAB_ROOT=/path/to/chai-lab
 > The reference env on our machine lives at
 > `/fs_mol/geyutang/GraDe_IF/miniconda3/envs/protein+chai` — `python 3.10.4`,
 > `torch 2.3.1+cu121`, `chai_lab 0.1.0`, `fair-esm 2.0.0`, `transformers 4.45.2`.
+
+**Which env runs what?**
+
+| Stage | Env used | Why |
+|-------|----------|-----|
+| Training (SFT / GRPO-TCR) | `OpenAgentRL` | vLLM / SGLang / FSDP / Ray stack |
+| Rollout tool subprocess (scaffold / motif / constraints / ESM refine) | whichever env launched the trainer — must contain `biopython`, `whoosh`, `requests`, `torch`, `transformers` | `pipline_new.AgentRuntime._run_subprocess(..., use_protrek_env=False)` inherits the parent Python |
+| Rollout tool subprocess (ProTrek similarity scoring) | `protrek` (`PROTREK_ENV_PYTHON`) | explicitly switched via `use_protrek_env=True` |
+| `infer_tools.py` (multi-turn inference) | `OpenAgentRL` (same reason as training) | |
+| `compute_metrics_multi_gpu.py` | `protein+chai` | Chai-1 / OpenMM / PDBFixer / biotite |
+
+If you prefer to keep a single environment, install the full stack above
+directly into your `OpenAgentRL` env and point `PROTEIN_CHAI_ENV` at it.
 
 All paths inside this repo are **relative to the repository root** and are
 resolved automatically by the scripts. External resources (conda envs, model
@@ -191,7 +218,7 @@ resources. Export them once in your shell (or in a wrapper script):
 | `CONDA_ROOT` | Root of your miniconda install, e.g. `/home/user/miniconda3` |
 | `MODEL_DIR` | Absolute path to a base or RL checkpoint |
 | `MODEL_PATH` | Base-model HF snapshot (used by `qwen2_7b_sft.sh` / `grpo_tcr_qwen2_7b.sh`) |
-| `PROTEIN_CHAI_ENV` | Conda env used by `compute_metrics.sh` / `infer_tools.sh`; defaults to `$CONDA_ROOT/envs/protein+chai` |
+| `PROTEIN_CHAI_ENV` | Conda env used by `compute_metrics.sh` / `infer_tools.sh` Step 3; same env also supplies the biology Python packages (`biopython`, `whoosh`, `fair-esm`, `biotite`, `rdkit`, `chai_lab`, …) imported by rollout-time tool subprocesses. Defaults to `$CONDA_ROOT/envs/protein+chai` |
 | `PROTREK_ENV_PYTHON` | Python in the `protrek` conda env, e.g. `$CONDA_ROOT/envs/protrek/bin/python` |
 | `PROTREK_35M_DIR`, `PROTREK_650M_DIR` | Local paths to the ProTrek checkpoints |
 | `ESM_MODEL_PATH` | Local HF snapshot of `facebook/esm2_t36_3B_UR50D` |
