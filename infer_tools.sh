@@ -18,7 +18,7 @@ PROJECT_ROOT="${PROJECT_ROOT:-${SCRIPT_DIR}}"
 # Conda (external). Export CONDA_ROOT before running.
 CONDA_ROOT="${CONDA_ROOT:?Please export CONDA_ROOT=/absolute/path/to/miniconda3}"
 OPENAGENT_ENV="${OPENAGENT_ENV:-${CONDA_ROOT}/envs/OpenAgentRL}"
-PROTEIN_CHAI_ENV="${PROTEIN_CHAI_ENV:-${CONDA_ROOT}/envs/protein_chai}"
+PROTEIN_CHAI_ENV="${PROTEIN_CHAI_ENV:-${CONDA_ROOT}/envs/protein+chai}"
 
 # Base model or RL checkpoint to evaluate. Export MODEL_DIR before running.
 MODEL_DIR="${MODEL_DIR:?Please export MODEL_DIR=/absolute/path/to/checkpoint}"

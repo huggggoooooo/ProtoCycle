@@ -132,6 +132,50 @@ cp -r  ProtoCycle/data/proteinllm                       Open-AgentRL/data/
 cp     ProtoCycle/infer_tools.py  ProtoCycle/infer_tools.sh  Open-AgentRL/
 ```
 
+### (Required for Evaluation) `protein+chai` conda environment
+
+Evaluation and the final stage of `infer_tools.sh` need a **separate** conda
+environment that provides Chai-1, ESM and structural biology dependencies
+(OpenMM, PDBFixer, biotite, etc.). The default env name expected by the
+scripts is `protein+chai` (literally, with a `+` sign — matches our original
+setup). Override by exporting `PROTEIN_CHAI_ENV` if you prefer a different
+name / location.
+
+```bash
+# 3) Build the evaluation env (CUDA 12.1 wheels; adjust for your CUDA)
+conda create -n "protein+chai" python=3.10 -y
+conda activate "protein+chai"
+
+# PyTorch 2.3.1 + CUDA 12.1 (matches our tested setup)
+pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cu121
+
+# Chai-1 + protein / structural biology stack
+pip install \
+  chai_lab==0.1.0 \
+  fair-esm==2.0.0 \
+  transformers==4.45.2 \
+  biopython==1.83 \
+  biotite==0.37.0 \
+  gemmi==0.6.3 \
+  rdkit==2023.9.5 \
+  einops==0.8.0 \
+  omegaconf==2.3.0 \
+  huggingface_hub==0.26.1 \
+  pandas==2.2.3 \
+  numpy==1.24.3
+
+# OpenMM / PDBFixer are easier to get via conda
+conda install -c conda-forge openmm=7.7.0 pdbfixer=1.8.1 -y
+
+# (Optional) keep a local chai-lab checkout if you want to patch it
+git clone https://github.com/chaidiscovery/chai-lab.git /path/to/chai-lab
+export CHAI_LAB_ROOT=/path/to/chai-lab
+```
+
+> The reference env on our machine lives at
+> `/fs_mol/geyutang/GraDe_IF/miniconda3/envs/protein+chai` — `python 3.10.4`,
+> `torch 2.3.1+cu121`, `chai_lab 0.1.0`, `fair-esm 2.0.0`, `transformers 4.45.2`.
+
 All paths inside this repo are **relative to the repository root** and are
 resolved automatically by the scripts. External resources (conda envs, model
 weights, databases) are referenced via environment variables; see the next
@@ -147,6 +191,7 @@ resources. Export them once in your shell (or in a wrapper script):
 | `CONDA_ROOT` | Root of your miniconda install, e.g. `/home/user/miniconda3` |
 | `MODEL_DIR` | Absolute path to a base or RL checkpoint |
 | `MODEL_PATH` | Base-model HF snapshot (used by `qwen2_7b_sft.sh` / `grpo_tcr_qwen2_7b.sh`) |
+| `PROTEIN_CHAI_ENV` | Conda env used by `compute_metrics.sh` / `infer_tools.sh`; defaults to `$CONDA_ROOT/envs/protein+chai` |
 | `PROTREK_ENV_PYTHON` | Python in the `protrek` conda env, e.g. `$CONDA_ROOT/envs/protrek/bin/python` |
 | `PROTREK_35M_DIR`, `PROTREK_650M_DIR` | Local paths to the ProTrek checkpoints |
 | `ESM_MODEL_PATH` | Local HF snapshot of `facebook/esm2_t36_3B_UR50D` |
